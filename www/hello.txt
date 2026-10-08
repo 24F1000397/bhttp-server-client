@@ -1,0 +1,2 @@
+Hello from BHTTP/1 Server!
+This is a plain text file served over binary HTTP framing.

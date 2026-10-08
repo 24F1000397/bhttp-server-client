@@ -1,0 +1,11 @@
+{
+    "protocol": "BHTTP/1",
+    "status": "operational",
+    "features": [
+        "fixed-size-frame-header",
+        "hpack-static-table",
+        "unknown-frame-skipping",
+        "single-tcp-connection",
+        "keep-alive"
+    ]
+}
