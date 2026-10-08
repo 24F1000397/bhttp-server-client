@@ -5,7 +5,9 @@
 #include <errno.h>
 
 #ifdef _WIN32
-  #pragma comment(lib, "ws2_32.lib")
+    #include <io.h>
+    #include <fcntl.h>
+    #pragma comment(lib, "ws2_32.lib")
 #endif
 
 typedef struct {
@@ -95,6 +97,10 @@ static int connect_to_host(const char *host, int port) {
 }
 
 int main(int argc, char *argv[]) {
+#ifdef _WIN32
+    _setmode(_fileno(stdout), _O_BINARY);
+#endif
+
     bool verbose = false;
     const char *url_arg = NULL;
 

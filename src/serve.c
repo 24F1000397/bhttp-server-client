@@ -228,15 +228,29 @@ static void handle_client(int client_fd, const char *doc_root) {
         /* Check Magic */
         if (hdr.magic != BHTTP_MAGIC_U16) {
             fprintf(stderr, "[Server] Invalid magic 0x%04X (expected 0x4248)\n", hdr.magic);
-            send_error_response(client_fd, BHTTP_STATUS_BAD_REQUEST, "Bad Request: Invalid Protocol Magic", BHTTP_FLAG_END_STREAM);
-            break;
+
+            if (hdr.payload_len <= BHTTP_MAX_PAYLOAD_SIZE) {
+                bhttp_skip_bytes(client_fd, hdr.payload_len);
+            }
+
+            send_error_response(client_fd, BHTTP_STATUS_BAD_REQUEST,
+                        "Bad Request: Invalid Protocol Magic",
+                        BHTTP_FLAG_END_STREAM);
+            continue;
         }
 
         /* Check Version */
         if (hdr.version != BHTTP_VERSION_1) {
             fprintf(stderr, "[Server] Unsupported protocol version %u\n", hdr.version);
-            send_error_response(client_fd, BHTTP_STATUS_BAD_REQUEST, "Bad Request: Unsupported Version", BHTTP_FLAG_END_STREAM);
-            break;
+
+            if (hdr.payload_len <= BHTTP_MAX_PAYLOAD_SIZE) {
+                bhttp_skip_bytes(client_fd, hdr.payload_len);
+            }
+
+            send_error_response(client_fd, BHTTP_STATUS_BAD_REQUEST,
+                        "Bad Request: Unsupported Version",
+                        BHTTP_FLAG_END_STREAM);
+            continue;
         }
 
         /* Check Payload Length limits */
